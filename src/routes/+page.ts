@@ -13,6 +13,7 @@ export const load: PageLoad = async ({ fetch }) => {
     // Only return countries that are UN members
     const filteredData = data.filter((country) => country.unMember);
 
+    // Sort countries alphabetically by common country name
     filteredData.sort((a, b) => {
         if (a.name.common < b.name.common) {
             return -1
@@ -22,8 +23,6 @@ export const load: PageLoad = async ({ fetch }) => {
             return 0
         }
     })
-
-    console.log(filteredData);
 
     return { countryData: filteredData }
 };

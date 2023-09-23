@@ -77,8 +77,6 @@ export class Game {
         const lat2 = this.country.capitalInfo.latlng.at(0);
         const lon2 = this.country.capitalInfo.latlng.at(1);
 
-        console.log(lat1,lon1,lat2,lon2)
-
         if (lat1 && lon1 && lat2 && lon2) {
             const dLat = this.deg2rad(lat2 - lat1);
             const dLon = this.deg2rad(lon2- lon1);
