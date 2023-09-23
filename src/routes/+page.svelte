@@ -7,16 +7,21 @@
 
     const countryData: CountryData[] = data.countryData;
     const game = new Game(countryData);
+
+    const submitGuess = () => {
+        game.guessIndex = game.checkGuess()
+        game.countryGuess = '';
+    }
 </script>
 <style>
     main {
         width: 100vw;
-        padding: 10px;
+        padding: 50px 10px;
         height: 100vh;
 
         display: flex;
         align-items: center;
-        justify-content: center;
+        justify-content: flex-start;
         flex-direction: column;
         gap: 5px;
 
@@ -107,10 +112,6 @@
         text-align: right;
     }
 
-    .previous-guesses {
-        height: 30px;
-    }
-
     @media only screen and (max-width: 768px) {
         main, form > input {
             font-size: 16px;
@@ -123,47 +124,51 @@
 </style>
 <main>
     <table class="hints">
-        <caption>Hints</caption>
+        <caption>What country is this?</caption>
         <tbody>
             <tr class="hint" class:visible={game.guessIndex >= 0}>
-                <td>Region</td>
-                <td>{game.country.subregion}</td>
+                <td><i class="fa-solid fa-globe"></i> Region</td>
+                <td>{game.country.region} <span style="color: #7a7a7a">({game.country.subregion})</span></td>
             </tr>
-            <tr class="hint" class:visible={game.guessIndex >= 1}>
-                <td>Landlocked</td>
-                <td>{game.country.landlocked}</td>
+            <tr class="hint" class:visible={game.guessIndex >= 0}>
+                <td><i class="fa-solid fa-water"></i> Landlocked</td>
+                {#if game.country.landlocked}
+                    <td><i class="fa-solid fa-check"></i></td>
+                {:else}
+                    <td><i class="fa-solid fa-xmark"></i></td>
+                {/if}
             </tr>
-            <tr class="hint" class:visible={game.guessIndex >= 2}>
-                <td>Area</td>
+            <tr class="hint" class:visible={game.guessIndex >= 0}>
+                <td><i class="fa-solid fa-chart-area"></i> Area</td>
                 <td>{new Intl.NumberFormat(undefined, { style: 'decimal' }).format(game.country.area)} km²</td>
             </tr>
-            <tr class="hint" class:visible={game.guessIndex >= 3}>
-                <td>Population</td>
+            <tr class="hint" class:visible={game.guessIndex >= 1}>
+                <td><i class="fa-solid fa-people"></i> Population</td>
                 <td>{new Intl.NumberFormat(undefined, { style: 'decimal' }).format(game.country.population)}</td>
             </tr>
-            <tr class="hint" class:visible={game.guessIndex >= 4}>
-                <td>Side of driving</td>
+            <tr class="hint" class:visible={game.guessIndex >= 2}>
+                <td><i class="fa-solid fa-car"></i> Side of driving</td>
                 <td>{game.country.car.side}</td>
             </tr>
-            <tr class="hint" class:visible={game.guessIndex >= 5}>
-                <td>Capital(s)</td>
+            <tr class="hint" class:visible={game.guessIndex >= 3}>
+                <td><i class="fa-solid fa-city"></i> Capital(s)</td>
                 <td>{game.country.capital.join(', ')}</td>
             </tr>
-            <tr class="hint" class:visible={game.guessIndex >= 6}>
-                <td>Language(s)</td>
+            <tr class="hint" class:visible={game.guessIndex >= 4}>
+                <td><i class="fa-solid fa-language"></i> Language(s)</td>
                 <td>{Object.values(game.country.languages).join(', ')}</td>
             </tr>
-            <tr class="hint" class:visible={game.guessIndex >= 7}>
-                <td>Flag</td>
+            <tr class="hint" class:visible={game.guessIndex >= 5}>
+                <td><i class="fa-solid fa-flag"></i> Flag</td>
                 <td><img src="{game.country.flags.svg.toString()}" alt="{game.country.flags.alt}"></td>
             </tr>
-            <tr class="hint" class:visible={game.guessIndex >= 8}>
-                <td>Name</td>
+            <tr class="hint" class:visible={game.guessIndex >= 6}>
+                <td><i class="fa-regular fa-input-text"></i> Name</td>
                 <td>{game.country.name.common}</td>
             </tr>
         </tbody>
     </table>
-    <form on:submit={() => game.guessIndex = game.checkGuess()}>
+    <form on:submit={submitGuess}>
         <input type="text" list="country-list" bind:value={game.countryGuess} class:invalid={!game.isValidGuess()} placeholder="Your guess">
         <button type="submit">Guess</button>
 
@@ -174,9 +179,12 @@
         </datalist>
     </form>
 
-    <div>
-        <p>Distance to correct guess (capital to capital): {game.distanceToCorrectGuess}</p>
+    <div class="previous-guesses">
         <h4>Previous guesses: </h4>
-        <p class="previous-guesses">{game.previousGuesses.join(', ')}</p>
+        <ul>
+            {#each game.previousGuesses as guess}
+                    <li>{guess}</li>
+            {/each}
+        </ul>
     </div>
 </main>

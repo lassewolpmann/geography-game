@@ -29,5 +29,6 @@ export interface CountryData {
     capitalInfo: {
         latlng: number[]
     },
+    region: string,
     subregion: string
 }
