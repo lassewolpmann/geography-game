@@ -20,7 +20,6 @@ export interface CountryData {
         signs: string[],
         side: string
     },
-    continents: string[],
     flags: {
         png: URL,
         svg: URL,
@@ -29,5 +28,6 @@ export interface CountryData {
     unMember: boolean,
     capitalInfo: {
         latlng: number[]
-    }
+    },
+    subregion: string
 }

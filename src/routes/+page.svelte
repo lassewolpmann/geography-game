@@ -19,7 +19,6 @@
         flex-direction: column;
         gap: 5px;
 
-        font-family: 'Poppins', sans-serif;
         font-size: 24px;
     }
 
@@ -32,22 +31,36 @@
         flex-direction: row;
         align-items: center;
         justify-content: space-between;
+        gap: 20px;
 
         margin-top: 15px;
     }
 
     form > input {
         font-size: 24px;
+        font-weight: 800;
+        flex: 4;
+        height: 100%;
+        box-sizing: border-box;
+        border: 2px solid #aaa;
+        border-radius: 10px;
+        padding: 5px;
+    }
+
+    form > input.invalid {
+        border: 2px solid red;
     }
 
     form > button {
         font-size: 16px;
         font-weight: 800;
         padding: 15px;
-        border: none;
+        border: 2px solid #aaa;
         border-radius: 10px;
         cursor: pointer;
         background: #eee;
+        flex: 1;
+        height: 100%;
     }
 
     form > button:hover {
@@ -56,12 +69,16 @@
 
     .hint {
         color: transparent;
-        text-shadow: 0 0 16px #000;
+        text-shadow: 0 0 16px #ddd;
     }
 
     .hint > td > img {
-        height: 50px;
+        margin: 0;
+        height: 48px;
+        border: none;
+        border-radius: 5px;
         filter: opacity(0);
+        vertical-align: middle;
     }
 
     .hint.visible > td > img {
@@ -94,8 +111,8 @@
         <caption>Hints</caption>
         <tbody>
             <tr class="hint" class:visible={game.guessIndex >= 0}>
-                <td>Continents</td>
-                <td>{game.country.continents.join(', ')}</td>
+                <td>Region</td>
+                <td>{game.country.subregion}</td>
             </tr>
             <tr class="hint" class:visible={game.guessIndex >= 1}>
                 <td>Landlocked</td>
@@ -132,7 +149,7 @@
         </tbody>
     </table>
     <form on:submit={() => game.guessIndex = game.checkGuess()}>
-        <input type="text" id="guess" name="guess" list="country-list" bind:value={game.countryGuess}>
+        <input type="text" id="guess" name="guess" list="country-list" bind:value={game.countryGuess} class:invalid={!game.isValidGuess()} placeholder="Country">
         <button type="submit">Check answer</button>
 
         <datalist id="country-list">

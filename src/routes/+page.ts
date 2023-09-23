@@ -3,7 +3,7 @@ import type { CountryData } from "$lib/types/CountryData";
 
 export const load: PageLoad = async ({ fetch }) => {
     const filter: string[] = ['name', 'capital', 'languages', 'landlocked', 'area', 'population', 'car',
-        'continents', 'flags', 'translations', 'unMember', 'capitalInfo'];
+        'subregion', 'flags', 'translations', 'unMember', 'capitalInfo'];
     const apiURL: URL = new URL('https://restcountries.com/v3.1/all');
     apiURL.searchParams.append('fields', filter.join(','))
 

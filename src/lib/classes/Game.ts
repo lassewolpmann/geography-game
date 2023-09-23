@@ -1,13 +1,13 @@
 import type { CountryData } from "$lib/types/CountryData";
 
 export class Game {
-    guessIndex: number = 0;
-    countryGuess: string = '';
-    guessCoords: number[] = [0, 0];
-    distanceToCorrectGuess: string = '';
-    previousGuesses: string[] = [];
-    countryData: CountryData[];
-    country: CountryData;
+    public guessIndex: number = 0;
+    public countryGuess: string = '';
+    public guessCoords: number[] = [0, 0];
+    public distanceToCorrectGuess: string = '';
+    public previousGuesses: string[] = [];
+    public readonly countryData: CountryData[];
+    public country: CountryData;
 
     constructor(countryData: CountryData[]) {
         this.countryData = countryData;
@@ -36,6 +36,7 @@ export class Game {
         this.findCoordsOfGuess();
 
         if (!this.countryGuess) return this.guessIndex;
+        if (!this.isValidGuess()) return this.guessIndex;
 
         const guess: string = this.countryGuess.toLowerCase();
         const common: string = this.country.name.common.toLowerCase();
@@ -51,14 +52,12 @@ export class Game {
         return this.guessIndex;
     }
 
-    findCoordsOfGuess(): void {
-        const guessedDataEntry = this.countryData.filter((country: CountryData) => {
-            const guess: string = this.countryGuess.toLowerCase();
-            const common: string = country.name.common.toLowerCase();
-            const official: string = country.name.official.toLowerCase();
+    isValidGuess(): boolean {
+        return this.returnDataOfGuessedCountry().length > 0
+    }
 
-            if (guess === common || guess === official) return true;
-        })
+    findCoordsOfGuess(): void {
+        const guessedDataEntry = this.returnDataOfGuessedCountry()
 
         if (guessedDataEntry.length > 0) {
             const guessedData = guessedDataEntry.at(0);
@@ -94,5 +93,15 @@ export class Game {
 
     deg2rad(deg: number): number {
         return deg * (Math.PI/180)
+    }
+
+    returnDataOfGuessedCountry(): CountryData[] {
+        const guess: string = this.countryGuess.toLowerCase();
+        return this.countryData.filter((country: CountryData) => {
+            const common: string = country.name.common.toLowerCase();
+            const official: string = country.name.official.toLowerCase();
+
+            if (guess === common || guess === official) return true;
+        })
     }
 }
