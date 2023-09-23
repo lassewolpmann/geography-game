@@ -61,7 +61,7 @@
         background: rgba(150, 150, 150, 0.2);
     }
 
-    form > button {
+    form > .submit-button {
         font-size: 16px;
         font-weight: 800;
         padding: 5px 10px;
@@ -73,7 +73,7 @@
         height: 100%;
     }
 
-    form > button:hover {
+    form > .submit-button:hover {
         background: rgba(255, 255, 255, 0.3);
     }
 
@@ -170,7 +170,7 @@
     </table>
     <form on:submit={submitGuess}>
         <input type="text" list="country-list" bind:value={game.countryGuess} class:invalid={!game.isValidGuess()} placeholder="Your guess">
-        <button type="submit">Guess</button>
+        <input type="submit" value="Guess" class="submit-button" />
 
         <datalist id="country-list">
             {#each countryData as country}
