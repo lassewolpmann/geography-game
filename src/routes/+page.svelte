@@ -32,6 +32,51 @@
         width: min(800px, 90vw);
     }
 
+    /* Table settings */
+
+    table {
+        border-collapse: collapse;
+    }
+
+    table td {
+        border-bottom: 3px solid #444;
+        padding: 5px;
+    }
+
+    table td:last-child {
+        text-align: right;
+    }
+
+    table tr:last-child td {
+        border-bottom: none;
+    }
+
+    .show-first-letter::first-letter {
+        color: #ddd;
+        text-shadow: none;
+    }
+
+    .hidden {
+        color: transparent;
+        text-shadow: 0 0 16px #ddd;
+    }
+
+    img {
+        height: 32px;
+        vertical-align: middle;
+    }
+
+    img.hidden {
+        filter: opacity(0);
+    }
+
+    caption {
+        font-size: 32px;
+        font-weight: 800;
+        text-align: left;
+    }
+
+    /* Form settings */
     form {
         display: flex;
         flex-direction: row;
@@ -41,79 +86,39 @@
         margin-top: 15px;
     }
 
-    form > input {
-        font-size: 24px;
-        font-weight: 800;
+    form input {
         flex: 4;
         box-sizing: border-box;
         border: none;
-        background: rgba(150, 150, 150, 0.2);
+        background: #333;
         padding: 10px;
         height: 100%;
-        color: inherit;
-    }
 
-    form > input.invalid {
-        background: rgba(255, 0, 0, 0.2);
-    }
-
-    form > input:placeholder-shown {
-        background: rgba(150, 150, 150, 0.2);
-    }
-
-    form > .submit-button {
-        font-size: 16px;
+        color: #ddd;
+        font-size: 24px;
         font-weight: 800;
-        padding: 5px 10px;
-        border: none;
-        cursor: pointer;
-        color: inherit;
-        background: rgba(255, 255, 255, 0.2);
-        flex: 1;
-        height: 100%;
     }
 
-    form > .submit-button:hover {
+    form input.invalid {
+        background: rgba(255, 0, 0, 0.1);
+    }
+
+    form input:placeholder-shown {
+        background: #333;
+    }
+
+    form .submit-button {
+        cursor: pointer;
+        background: #444;
+        flex: 1;
+    }
+
+    form .submit-button:hover {
         background: rgba(255, 255, 255, 0.3);
     }
 
-    .hint {
-        color: transparent;
-        text-shadow: 0 0 16px #ddd;
-    }
-
-    .hint > td > img {
-        margin: 0;
-        height: 48px;
-        border: none;
-        border-radius: 5px;
-        filter: opacity(0);
-        vertical-align: middle;
-    }
-
-    .hint.visible > td > img {
-        filter: opacity(1);
-        transition: all 0.2s ease;
-    }
-
-    .hint.visible {
-        color: inherit;
-        text-shadow: none;
-        transition: all 0.2s ease;
-    }
-
-    caption {
-        font-size: 32px;
-        font-weight: 800;
-        text-align: left;
-    }
-
-    tr > td:last-child {
-        text-align: right;
-    }
-
     @media only screen and (max-width: 768px) {
-        main, form > input {
+        main, form input {
             font-size: 16px;
         }
 
@@ -123,48 +128,59 @@
     }
 </style>
 <main>
-    <table class="hints">
+    <table>
         <caption>What country is this?</caption>
         <tbody>
-            <tr class="hint" class:visible={game.guessIndex >= 0}>
-                <td><i class="fa-solid fa-globe"></i> Region</td>
+            <tr>
+                <td><i class="fa-solid fa-globe"></i></td>
+                <td>Region</td>
                 <td>{game.country.region} <span style="color: #7a7a7a">({game.country.subregion})</span></td>
             </tr>
-            <tr class="hint" class:visible={game.guessIndex >= 0}>
-                <td><i class="fa-solid fa-water"></i> Landlocked</td>
-                {#if game.country.landlocked}
-                    <td><i class="fa-solid fa-check"></i></td>
-                {:else}
-                    <td><i class="fa-solid fa-xmark"></i></td>
-                {/if}
-            </tr>
-            <tr class="hint" class:visible={game.guessIndex >= 0}>
-                <td><i class="fa-solid fa-chart-area"></i> Area</td>
+            <tr>
+                <td><i class="fa-solid fa-chart-area"></i></td>
+                <td>Area</td>
                 <td>{new Intl.NumberFormat(undefined, { style: 'decimal' }).format(game.country.area)} km²</td>
             </tr>
-            <tr class="hint" class:visible={game.guessIndex >= 1}>
-                <td><i class="fa-solid fa-people"></i> Population</td>
-                <td>{new Intl.NumberFormat(undefined, { style: 'decimal' }).format(game.country.population)}</td>
+            <tr>
+                <td><i class="fa-solid fa-water"></i></td>
+                <td>Landlocked</td>
+                <td class:hidden={game.guessIndex < 1}>
+                    {#if game.country.landlocked}
+                        <i class="fa-solid fa-check"></i>
+                    {:else}
+                        <i class="fa-solid fa-xmark"></i>
+                    {/if}
+                </td>
             </tr>
-            <tr class="hint" class:visible={game.guessIndex >= 2}>
-                <td><i class="fa-solid fa-car"></i> Side of driving</td>
-                <td>{game.country.car.side}</td>
+            <tr>
+                <td><i class="fa-solid fa-people"></i></td>
+                <td>Population</td>
+                <td class:hidden={game.guessIndex < 2}>{new Intl.NumberFormat(undefined, { style: 'decimal' }).format(game.country.population)}</td>
             </tr>
-            <tr class="hint" class:visible={game.guessIndex >= 3}>
-                <td><i class="fa-solid fa-city"></i> Capital(s)</td>
-                <td>{game.country.capital.join(', ')}</td>
+            <tr>
+                <td><i class="fa-solid fa-car"></i></td>
+                <td>Side of driving</td>
+                <td class:hidden={game.guessIndex < 3}>{game.country.car.side}</td>
             </tr>
-            <tr class="hint" class:visible={game.guessIndex >= 4}>
-                <td><i class="fa-solid fa-language"></i> Language(s)</td>
-                <td>{Object.values(game.country.languages).join(', ')}</td>
+            <tr>
+                <td><i class="fa-solid fa-city"></i></td>
+                <td>Capital</td>
+                <td class:hidden={game.guessIndex < 4} class="show-first-letter">{game.country.capital.at(0)}</td>
             </tr>
-            <tr class="hint" class:visible={game.guessIndex >= 5}>
-                <td><i class="fa-solid fa-flag"></i> Flag</td>
-                <td><img src="{game.country.flags.svg.toString()}" alt="{game.country.flags.alt}"></td>
+            <tr>
+                <td><i class="fa-solid fa-language"></i></td>
+                <td>Language(s)</td>
+                <td class:hidden={game.guessIndex < 5} class="show-first-letter">{Object.values(game.country.languages).join(', ')}</td>
             </tr>
-            <tr class="hint" class:visible={game.guessIndex >= 6}>
-                <td><i class="fa-regular fa-input-text"></i> Name</td>
-                <td>{game.country.name.common}</td>
+            <tr>
+                <td><i class="fa-solid fa-flag"></i></td>
+                <td>Flag</td>
+                <td><img src="{game.country.flags.svg.toString()}" alt="{game.country.flags.alt}" class:hidden={game.guessIndex < 6}></td>
+            </tr>
+            <tr>
+                <td><i class="fa-regular fa-input-text"></i></td>
+                <td>Name</td>
+                <td class:hidden={game.guessIndex < 7}>{game.country.name.common}</td>
             </tr>
         </tbody>
     </table>
