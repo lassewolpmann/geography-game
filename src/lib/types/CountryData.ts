@@ -7,12 +7,6 @@ export interface CountryData {
     languages: {
         [key: string]: string
     },
-    translations: {
-        [key: string]: {
-            common: string,
-            official: string
-        }
-    }
     landlocked: boolean,
     area: number,
     population: number,

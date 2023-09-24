@@ -25,14 +25,17 @@ export class Game {
         }
     }
 
-    startNewRound(): void {
+    startNewRound(dialog: HTMLDialogElement): number {
+        dialog.close();
         this.guessIndex = 0;
         this.countryGuess = '';
         this.previousGuesses = [];
         this.country = this.chooseRandomCountry();
+
+        return this.guessIndex;
     }
 
-    checkGuess(): number {
+    checkGuess(dialog: HTMLDialogElement): number {
         this.findCoordsOfGuess();
 
         if (!this.countryGuess) return this.guessIndex;
@@ -43,11 +46,18 @@ export class Game {
         const official: string = this.country.name.official.toLowerCase();
 
         if (guess === common || guess === official) {
-            this.startNewRound();
+            // Correct guess or last possible guess
+            dialog.showModal();
+        } else if (this.guessIndex === 6) {
+            this.guessIndex += 1;
+            dialog.showModal();
         } else {
+            // Wrong guess but keep playing
             this.guessIndex += 1;
             this.previousGuesses.push(`${this.countryGuess} (${this.distanceToCorrectGuess})`);
         }
+
+        this.countryGuess = '';
 
         return this.guessIndex;
     }

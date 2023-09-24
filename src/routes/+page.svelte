@@ -4,14 +4,10 @@
     import { Game } from "$lib/classes/Game";
 
     export let data: PageData;
-
+    let gameEndDialog: HTMLDialogElement;
     const countryData: CountryData[] = data.countryData;
-    const game = new Game(countryData);
 
-    const submitGuess = () => {
-        game.guessIndex = game.checkGuess()
-        game.countryGuess = '';
-    }
+    const game = new Game(countryData);
 </script>
 <style>
     main {
@@ -117,6 +113,29 @@
         background: rgba(255, 255, 255, 0.3);
     }
 
+    /* Game End Dialog */
+    .game-end-dialog {
+        border: none;
+        border-radius: 15px;
+        background: #222;
+        color: #ddd;
+    }
+
+    .game-end-dialog::backdrop {
+        background: rgba(0, 0, 0, 0.7);
+    }
+
+    .game-end-dialog button {
+        cursor: pointer;
+        background: #444;
+        box-sizing: border-box;
+        border: none;
+        padding: 10px;
+        color: #ddd;
+        font-size: 24px;
+        font-weight: 800;
+    }
+
     @media only screen and (max-width: 768px) {
         main, form input {
             font-size: 16px;
@@ -184,7 +203,7 @@
             </tr>
         </tbody>
     </table>
-    <form on:submit={submitGuess}>
+    <form on:submit={() => game.guessIndex = game.checkGuess(gameEndDialog)}>
         <input type="text" list="country-list" bind:value={game.countryGuess} class:invalid={!game.isValidGuess()} placeholder="Your guess">
         <input type="submit" value="Guess" class="submit-button" />
 
@@ -203,4 +222,15 @@
             {/each}
         </ul>
     </div>
+
+    <dialog bind:this={gameEndDialog} class="game-end-dialog">
+        {#if game.guessIndex <= 6}
+            <h3><i class="fa-solid fa-trophy"></i> You won!</h3>
+            <p>It took you {game.guessIndex} hint(s) to find the country.</p>
+        {:else}
+            <h3><i class="fa-solid fa-face-frown-slight"></i> You lost!</h3>
+            <p>You couldn't find the country with the given hints.</p>
+        {/if}
+        <button on:click={() => game.guessIndex = game.startNewRound(gameEndDialog)}>Start new round</button>
+    </dialog>
 </main>
