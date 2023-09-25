@@ -1,17 +1,26 @@
 import type { CountryData } from "$lib/types/CountryData";
 
 export class Game {
-    public guessIndex: number = 0;
-    public countryGuess: string = '';
-    public guessCoords: number[] = [0, 0];
-    public distanceToCorrectGuess: string = '';
-    public previousGuesses: string[] = [];
+    public guessIndex: number;
+    public maxHints: number;
+    public countryGuess: string;
+    public previousGuesses: string[][];
     public readonly countryData: CountryData[];
     public country: CountryData;
 
+    private guessCoords: number[];
+    private distanceToCorrectGuess: string;
+
     constructor(countryData: CountryData[]) {
+        this.guessIndex = 0;
+        this.maxHints = 0;
+        this.countryGuess = '';
+        this.previousGuesses = [];
         this.countryData = countryData;
         this.country = this.chooseRandomCountry();
+
+        this.guessCoords = [0, 0];
+        this.distanceToCorrectGuess = '';
     }
 
     chooseRandomCountry(): CountryData {
@@ -48,13 +57,13 @@ export class Game {
         if (guess === common || guess === official) {
             // Correct guess or last possible guess
             dialog.showModal();
-        } else if (this.guessIndex === 6) {
+        } else if (this.guessIndex === this.maxHints) {
             this.guessIndex += 1;
             dialog.showModal();
         } else {
             // Wrong guess but keep playing
             this.guessIndex += 1;
-            this.previousGuesses.push(`${this.countryGuess} (${this.distanceToCorrectGuess})`);
+            this.previousGuesses.push([this.countryGuess, this.distanceToCorrectGuess]);
         }
 
         this.countryGuess = '';
